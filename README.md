@@ -1,5 +1,5 @@
 # recipe-management
-REST API sample project to manage Recipes(OpenAPI, Spring, MySQL, Java 11)
+REST API sample project to manage Recipes(OpenAPI, Spring, MySQL, Java 17)
 
 # Getting Started
 This application is a REST API app that will help manage the recipes.
