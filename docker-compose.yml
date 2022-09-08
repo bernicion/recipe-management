@@ -1,0 +1,24 @@
+version: '3.6'
+
+services:
+  # MySQL
+  recipe_service_db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: recipe_service
+      MYSQL_HOST: localhost
+      MYSQL_USER: recipe_manager
+      MYSQL_PASSWORD: password
+    ports:
+        - "3306:3306"
+
+    volumes:
+      - ../scripts:/docker-entrypoint-initdb.d
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local

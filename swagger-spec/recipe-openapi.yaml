@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  description: Recipe management API
+  version: "1.0"
+  title: Recipe management
+
+paths:
+  /recipes/filter:
+    post:
+      operationId: filterRecipesByCriteria
+      summary: Filter recipes
+      description: Returns the recipes for given criteria
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: Page number
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 50
+          description: Page size
+          required: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeSearchCriteriaDto'
+      responses:
+        '200':
+          description: The list of recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeDto'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /recipes:
+    post:
+      operationId: addRecipe
+      summary: Add a recipe
+      requestBody:
+        description: The recipe body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeDto'
+      responses:
+        '201':
+          description: Added recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeDto'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+    get:
+      operationId: getRecipes
+      summary: Get recipes
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: Page number
+          required: false
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 50
+          description: Page size
+          required: false
+      responses:
+        '200':
+          description: The list od recipies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeDto'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /recipes/{id}:
+    get:
+      operationId: getRecipeById
+      summary: Get a recipe
+      description: Gets a recipe by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          description: Id of the Recipe
+          required: true
+      responses:
+        '200':
+          description: Returns the recipe by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeDto'
+        '204':
+          description: No recipe found for given id
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+    put:
+      operationId: updateRecipeById
+      summary: Update a recipe
+      description: Updates a recipe by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          description: Id of the Recipe
+          required: true
+      requestBody:
+        description: The recipe object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeDto'
+      responses:
+        '200':
+          description: Updated recipe object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeDto'
+        '204':
+          description: No recipe found for given id
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+    delete:
+      operationId: deleteRecipeById
+      summary: Delete a recipe
+      description: Deletes a recipe by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          description: Id of the Recipe
+          required: true
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+components:
+  schemas:
+    RecipeDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1000
+        name:
+          type: string
+          example: Steak
+        isVegan:
+          type: boolean
+          example: false
+        servings:
+          type: integer
+          example: 2
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientDto'
+        instruction:
+          type: string
+          example: Medium rare steak should be cooked on medium fire for 30 minutes
+    RecipeSearchCriteriaDto:
+      type: object
+      properties:
+        isVegan:
+          type: boolean
+          example: true
+        servings:
+          type: integer
+          example: 4
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientLookupDto'
+        instruction:
+          type: string
+          example: oven
+    IngredientLookupDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: potatoes
+        include:
+          type: boolean
+          example: false
+    IngredientDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Meat
+        quantity:
+          type: integer
+          example: 500
+        unitOfMeasure:
+          $ref: '#/components/schemas/UnitOfMeasureDto'
+    UnitOfMeasureDto:
+      type: string
+      enum:
+        - POUND
+        - GLASS
+        - LITER
+        - PIECE
